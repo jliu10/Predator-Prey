@@ -5,6 +5,17 @@ public class Simulation {
     int numCams, numPols, maxCams, maxPols;
     ArrayList<Integer> camsData, polsData;
 
+    public Simulation() {
+        cams = new boolean[10][10];
+        pols = new boolean[10][10];
+        numCams = 5;
+        numPols = 5;
+        maxCams = 100;
+        maxPols = 75;
+        camsData = new ArrayList<Integer>();
+        polsData = new ArrayList<Integer>();
+    }
+
     public Simulation(int mc, int mp) {
         cams = new boolean[10][10];
         pols = new boolean[10][10];
@@ -127,6 +138,7 @@ public class Simulation {
     }
 
     public static int countDigits(int n) {
+        if(n = 0) return 1;
         int count = 0;
         while(n > 0) {
             count++;
@@ -136,9 +148,14 @@ public class Simulation {
     }
 
     public static void main(String[] args) {
-        Simulation sim0 = new Simulation(100, 75);
+        Simulation sim0 = new Simulation();
+        Simulation sim1 = new Simulation(100, 90);
 
+        System.out.println("---------DEFAULT CONDITIONS: ---------");
         sim0.simulate(20);
+
+        System.out.println("---------MAX POLLARDS 90: ---------");
+        sim1.simulate(20);
         /*
         System.out.println(countDigits(1));
         System.out.println(countDigits(2));
