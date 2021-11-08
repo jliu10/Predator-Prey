@@ -4,6 +4,8 @@ public class Simulation {
     boolean[][] cams, pols;
     int numCams, numPols, maxCams, maxPols;
     ArrayList<Integer> camsData, polsData;
+    boolean refuge; // Activite refuge if true
+        // The refuge is the top left 4x4 squares, where pollards cannot spawn
 
     public Simulation() {
         cams = new boolean[10][10];
@@ -14,9 +16,10 @@ public class Simulation {
         maxPols = 75;
         camsData = new ArrayList<Integer>();
         polsData = new ArrayList<Integer>();
+        refuge = false;
     }
 
-    public Simulation(int mc, int mp) {
+    public Simulation(int mc, int mp, boolean refugeOn) {
         cams = new boolean[10][10];
         pols = new boolean[10][10];
         numCams = 5;
@@ -25,13 +28,12 @@ public class Simulation {
         maxPols = mp;
         camsData = new ArrayList<Integer>();
         polsData = new ArrayList<Integer>();
+        refuge = refugeOn;
     }
 
     public void run(int c, int p) {
         int squaresLeft = 100;
         int overlap = 0;
-        // int ogC = c;
-        // int ogP = p;
         for(int i = 0; i < 10; i++) for(int j = 0; j < 10; j++) {
             // Caminacules
             if((int)(Math.random() * squaresLeft) + 1 <= c) {
@@ -40,8 +42,16 @@ public class Simulation {
             }
             // Pollards
             if((int)(Math.random() * squaresLeft) + 1 <= p) {
-                pols[i][j] = true;
-                p--;
+                if(refuge) {
+                    if(!(i <= 3 && j <= 3)) { // Cannot spawn on top left 4x4 squares
+                        pols[i][j] = true;
+                        p--;
+                    }
+                }
+                else {
+                    pols[i][j] = true;
+                    p--;
+                }
             }
             squaresLeft--;
             if(cams[i][j] && pols[i][j]) overlap++;
@@ -138,7 +148,7 @@ public class Simulation {
     }
 
     public static int countDigits(int n) {
-        if(n = 0) return 1;
+        if(n == 0) return 1;
         int count = 0;
         while(n > 0) {
             count++;
@@ -149,13 +159,17 @@ public class Simulation {
 
     public static void main(String[] args) {
         Simulation sim0 = new Simulation();
-        Simulation sim1 = new Simulation(100, 90);
+        Simulation sim1 = new Simulation(100, 90, false);
+        Simulation sim2 = new Simulation(100, 75, true);
 
         System.out.println("---------DEFAULT CONDITIONS: ---------");
         sim0.simulate(20);
 
         System.out.println("---------MAX POLLARDS 90: ---------");
         sim1.simulate(20);
+
+        System.out.println("---------REFUGE: ---------");
+        sim2.simulate(20);
         /*
         System.out.println(countDigits(1));
         System.out.println(countDigits(2));
